@@ -6,10 +6,12 @@ import "./globals.css";
 
 // Providers
 import { UiProviders } from "./providers/next-ui";
+import { cn } from "@nextui-org/react";
 
 const poppins = Poppins({
 	subsets: ["latin"],
 	weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+	variable: "--font-poppins",
 });
 
 export const metadata: Metadata = {
@@ -24,7 +26,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className={poppins.className}>
+			<body className={cn("font-poppins antialiased", poppins.variable)}>
 				<UiProviders>{children}</UiProviders>
 			</body>
 		</html>
