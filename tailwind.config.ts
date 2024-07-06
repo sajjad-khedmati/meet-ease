@@ -10,6 +10,10 @@ const config: Config = {
 	],
 	theme: {
 		extend: {
+			colors: {
+				"background-primary": "#161925",
+				secondary: "#1C1F2E",
+			},
 			fontFamily: {
 				poppins: ["var(--font-poppins)"],
 			},
