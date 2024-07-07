@@ -8,7 +8,6 @@ interface timerExportProps {
 
 export function useTimer(initial: number): timerExportProps {
 	const now = new Date(initial);
-
 	const temp_time = now.toLocaleTimeString("en-US", {
 		hour: "2-digit",
 		minute: "2-digit",
@@ -23,9 +22,10 @@ export function useTimer(initial: number): timerExportProps {
 		date: temp_date,
 		isAfternoon: now.getHours() >= 12,
 	});
+
 	useEffect(() => {
 		const timer = setInterval(() => {
-			const now = new Date(initial);
+			const now = new Date();
 
 			const temp_time = now.toLocaleTimeString("en-US", {
 				hour: "2-digit",
@@ -45,7 +45,7 @@ export function useTimer(initial: number): timerExportProps {
 		}, 1000);
 
 		return () => clearInterval(timer);
-	}, []);
+	}, [initial]);
 	const time = timeData.time;
 	const date = timeData.date;
 	const isAfternoon = timeData.isAfternoon;
