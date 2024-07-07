@@ -7,6 +7,8 @@ import "./globals.css";
 // Providers
 import { UiProviders } from "./providers/next-ui";
 import { cn } from "@nextui-org/react";
+import { ClerkProvider } from "@clerk/nextjs";
+import { dark, experimental__simple } from "@clerk/themes";
 
 const poppins = Poppins({
 	subsets: ["latin"],
@@ -25,10 +27,22 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
-			<body className={cn("font-poppins antialiased", poppins.variable)}>
-				<UiProviders>{children}</UiProviders>
-			</body>
-		</html>
+		<ClerkProvider
+			appearance={{
+				layout: {
+					logoImageUrl: "/icons/logo.svg",
+					socialButtonsVariant: "iconButton",
+				},
+				variables: {
+					colorPrimary: "#0E78F9",
+				},
+			}}
+		>
+			<html lang="en">
+				<body className={cn("font-poppins antialiased", poppins.variable)}>
+					<UiProviders>{children}</UiProviders>
+				</body>
+			</html>
+		</ClerkProvider>
 	);
 }

@@ -1,3 +1,7 @@
+"use client";
+import { SignedIn, SignInButton, UserProfile } from "@clerk/clerk-react";
+import { SignedOut, UserButton } from "@clerk/nextjs";
+import { dark, experimental__simple } from "@clerk/themes";
 import {
 	Navbar,
 	NavbarBrand,
@@ -6,11 +10,12 @@ import {
 	NavbarMenuItem,
 	NavbarMenuToggle,
 } from "@nextui-org/react";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 export default function Header() {
+	const { theme } = useTheme();
 	return (
 		<Navbar maxWidth="full" className="dark:bg-secondary bg-slate-50">
 			<NavbarContent>
@@ -25,7 +30,26 @@ export default function Header() {
 					<h1 className="font-semibold text-xl">Meet Ease</h1>
 				</NavbarBrand>
 			</NavbarContent>
-			<NavbarContent justify="end">profile</NavbarContent>
+			<NavbarContent justify="end">
+				<SignedOut>
+					<SignInButton />
+				</SignedOut>
+				<SignedIn>
+					<UserButton
+						userProfileProps={{
+							appearance: {
+								baseTheme: theme === "dark" ? dark : experimental__simple,
+							},
+						}}
+						appearance={{
+							variables: {
+								colorPrimary: "#0E78F9",
+							},
+							baseTheme: theme === "dark" ? dark : experimental__simple,
+						}}
+					/>
+				</SignedIn>
+			</NavbarContent>
 			<NavbarMenu>
 				<NavbarMenuItem>
 					<Link href={"/"}>Home</Link>
