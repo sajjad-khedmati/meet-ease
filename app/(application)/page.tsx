@@ -1,7 +1,9 @@
+import Hero from "./components/hero";
+
 export default function Home() {
 	return (
-		<main>
-			<h1 className="font-semibold text-xl"></h1>
+		<main className="flex size-full flex-col gap-10 custom_container">
+			<Hero currentTime={Date.now()} />
 		</main>
 	);
 }

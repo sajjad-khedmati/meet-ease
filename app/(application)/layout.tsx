@@ -10,11 +10,11 @@ export default function ApplicationLayout({
 	children,
 }: ApplicationLayoutProps) {
 	return (
-		<main className="w-screen h-screen flex flex-col">
+		<main className="w-screen h-screen flex flex-col overflow-hidden">
 			<Header />
 			<section className="flex h-1 flex-1">
 				<Sidebar />
-				<section>{children}</section>
+				<section className="flex-1 overflow-y-scroll">{children}</section>
 			</section>
 		</main>
 	);

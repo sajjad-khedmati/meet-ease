@@ -17,6 +17,9 @@ const config: Config = {
 			fontFamily: {
 				poppins: ["var(--font-poppins)"],
 			},
+			backgroundImage: {
+				hero: "url('/images/hero-background.png')",
+			},
 		},
 	},
 	darkMode: "class",
