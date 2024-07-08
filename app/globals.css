@@ -32,12 +32,12 @@
 		@apply w-screen h-screen;
 	}
 	.custom_container {
-		@apply px-4 md:px-6 lg:px-8 xl:px-12 py-2 md:py-4 lg:py-6 xl:py-8;
+		@apply px-4 md:px-6 lg:px-8 xl:px-12 py-2 md:py-4 xl:py-6;
 	}
 }
 
 .glassmorphism {
-	background: rgba(255, 255, 255, 0.07);
+	background: rgba(255, 255, 255, 0.198);
 	backdrop-filter: blur(4px);
 	-webkit-backdrop-filter: blur(4px);
 }
@@ -46,4 +46,10 @@
 	background: rgba(18, 17, 17, 0.25);
 	backdrop-filter: blur(8px);
 	-webkit-backdrop-filter: blur(8px);
+}
+
+.cl-internal-11ttlho,
+.cl-internal-180wb59,
+.cl-internal-lqfubk {
+	display: none;
 }

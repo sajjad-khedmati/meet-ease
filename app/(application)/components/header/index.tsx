@@ -13,11 +13,19 @@ import {
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
+import MobileNavItems from "./mobile-nav-items";
+import { useState } from "react";
 
 export default function Header() {
 	const { theme } = useTheme();
+	const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 	return (
-		<Navbar maxWidth="full" className="dark:bg-secondary bg-slate-50">
+		<Navbar
+			isMenuOpen={isMenuOpen}
+			onMenuOpenChange={setIsMenuOpen}
+			maxWidth="full"
+			className="dark:bg-secondary bg-slate-50"
+		>
 			<NavbarContent>
 				<NavbarMenuToggle className="lg:hidden"></NavbarMenuToggle>
 				<NavbarBrand>
@@ -50,11 +58,7 @@ export default function Header() {
 					/>
 				</SignedIn>
 			</NavbarContent>
-			<NavbarMenu>
-				<NavbarMenuItem>
-					<Link href={"/"}>Home</Link>
-				</NavbarMenuItem>
-			</NavbarMenu>
+			<MobileNavItems setIsMenuOpen={setIsMenuOpen} />
 		</Navbar>
 	);
 }
