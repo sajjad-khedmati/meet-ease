@@ -1,21 +1,8 @@
 import { ReactNode } from "react";
-import Header from "./components/header";
-import Sidebar from "./components/sidebar";
+import { StreamClientProvider } from "../providers/stream-client-provider";
 
-interface ApplicationLayoutProps {
-	children: ReactNode;
-}
+const RootLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
+	return <StreamClientProvider>{children}</StreamClientProvider>;
+};
 
-export default function ApplicationLayout({
-	children,
-}: ApplicationLayoutProps) {
-	return (
-		<main className="w-screen h-screen flex flex-col overflow-hidden">
-			<Header />
-			<section className="flex h-1 flex-1">
-				<Sidebar />
-				<section className="flex-1 overflow-y-scroll">{children}</section>
-			</section>
-		</main>
-	);
-}
+export default RootLayout;

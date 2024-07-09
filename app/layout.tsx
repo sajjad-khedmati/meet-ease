@@ -8,7 +8,7 @@ import "./globals.css";
 import { UiProviders } from "./providers/next-ui";
 import { cn } from "@nextui-org/react";
 import { ClerkProvider } from "@clerk/nextjs";
-import { dark, experimental__simple } from "@clerk/themes";
+import { Toaster } from "sonner";
 
 const poppins = Poppins({
 	subsets: ["latin"],
@@ -41,6 +41,7 @@ export default function RootLayout({
 			<html lang="en">
 				<body className={cn("font-poppins antialiased", poppins.variable)}>
 					<UiProviders>{children}</UiProviders>
+					<Toaster position="top-center" closeButton richColors />
 				</body>
 			</html>
 		</ClerkProvider>

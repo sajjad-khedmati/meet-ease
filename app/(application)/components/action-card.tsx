@@ -1,12 +1,14 @@
 import { cn } from "@nextui-org/react";
 import Image from "next/image";
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
+import { MeetOptions } from "./meeting-options";
 
 interface ActionCardProps {
 	iconSrc: string;
 	title: string;
 	description: string;
 	classNames?: string;
+	onClick: () => void;
 }
 
 const ActionCard: React.FC<ActionCardProps> = ({
@@ -14,6 +16,7 @@ const ActionCard: React.FC<ActionCardProps> = ({
 	title,
 	description,
 	classNames,
+	onClick,
 }) => {
 	return (
 		<div
@@ -21,6 +24,7 @@ const ActionCard: React.FC<ActionCardProps> = ({
 				"md:h-[260px] flex flex-col justify-between gap-6 p-4 bg-slate-100 dark:bg-gray-600 rounded-xl cursor-pointer overflow-hidden ",
 				classNames,
 			)}
+			onClick={onClick}
 		>
 			<div className="flex-center glassmorphism p-2 rounded-xl size-12">
 				<Image src={iconSrc} alt="icon" width={25} height={25} />
