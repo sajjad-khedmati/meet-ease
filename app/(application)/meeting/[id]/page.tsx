@@ -27,7 +27,7 @@ export default function MeetingRoomPage() {
 		);
 
 	return (
-		<div className="w-screen h-screen overflow-hidden">
+		<div className="w-screen h-screen overflow-hidden bg-background-primary">
 			<StreamCall call={call}>
 				<StreamTheme>
 					{!isSetupComplete ? (

@@ -36,7 +36,10 @@ export default function MeetingSetup({
 	}, [isMicCamToggleOn, call?.microphone, call?.camera]);
 
 	return (
-		<div className="w-screen h-screen flex flex-col gap-4 justify-center items-center px-4 py-2">
+		<div
+			className="w-screen h-screen flex flex-col gap-4 justify-center items-center px-4 py-2 
+		bg-background-primary text-white"
+		>
 			<h1 className="text-xl font-semibold">Setup</h1>
 
 			<VideoPreview
@@ -50,7 +53,7 @@ export default function MeetingSetup({
 				onChange={(e) => setIsMicCamToggleOn(e.target.checked)}
 				className="mt-2"
 			>
-				Join with mic and camera off
+				<p className="text-white">Join with mic and camera off</p>
 			</Checkbox>
 
 			<DeviceSettings />
@@ -65,6 +68,7 @@ export default function MeetingSetup({
 						.catch((err) => {
 							console.log(err);
 							toast.error("Somthing was wrong");
+							throw new Error(err.message);
 						});
 					setIsSetupComplete(true);
 				}}
@@ -81,7 +85,7 @@ export default function MeetingSetup({
 const CustomDisabledVideoPreview = () => {
 	return (
 		<div className="w-full h-full flex items-center justify-center">
-			<p className="text-sm font-medium">Video is disabled</p>
+			<p className="text-sm font-medium light:text-black">Video is disabled</p>
 		</div>
 	);
 };
@@ -89,7 +93,9 @@ const CustomDisabledVideoPreview = () => {
 const CustomNoCameraPreview = () => {
 	return (
 		<div className="w-full h-full flex items-center justify-center">
-			<p className="text-sm font-medium">Camera was not founded</p>
+			<p className="text-sm font-medium light:text-black">
+				Camera was not founded
+			</p>
 		</div>
 	);
 };

@@ -55,7 +55,13 @@
 }
 
 .str-video__menu-container,
-.str-video__device-settings {
+.str-video__device-settings,
+.str-video__generic-menu,
+.str-video__generic-menu--item {
 	font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
 		"Lucida Sans Unicode", Geneva, Verdana, sans-serif !important;
+}
+
+.str-video__menu-container {
+	z-index: 100000 !important;
 }
