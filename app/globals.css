@@ -53,3 +53,9 @@
 .cl-internal-lqfubk {
 	display: none;
 }
+
+.str-video__menu-container,
+.str-video__device-settings {
+	font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+		"Lucida Sans Unicode", Geneva, Verdana, sans-serif !important;
+}

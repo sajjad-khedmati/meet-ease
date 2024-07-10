@@ -4,6 +4,8 @@ import { Poppins } from "next/font/google";
 // Global styles
 import "./globals.css";
 
+import "@stream-io/video-react-sdk/dist/css/styles.css";
+
 // Providers
 import { UiProviders } from "./providers/next-ui";
 import { cn } from "@nextui-org/react";

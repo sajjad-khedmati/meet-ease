@@ -8,14 +8,9 @@ import Loader from "../components/loader";
 const apiKey = process.env.NEXT_PUBLIC_STREAM_API_KEY;
 
 export const StreamClientProvider = ({ children }: { children: ReactNode }) => {
-	const [isClient, setIsClient] = useState<boolean>(false);
 	const [videoClient, setVideoClient] = useState<StreamVideoClient>();
-
 	const { user, isLoaded } = useUser();
 
-	useEffect(() => {
-		setIsClient(true);
-	}, []);
 	useEffect(() => {
 		if (!isLoaded || !user) return;
 		if (!apiKey) throw new Error("Stream API key missing");
