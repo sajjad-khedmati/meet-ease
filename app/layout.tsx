@@ -21,6 +21,9 @@ const poppins = Poppins({
 export const metadata: Metadata = {
 	title: "Meet Ease",
 	description: "Easally start meeting",
+	icons: {
+		icon: "/icons/logo.svg",
+	},
 };
 
 export default function RootLayout({
