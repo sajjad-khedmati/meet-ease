@@ -9,7 +9,7 @@ import {
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { MeetOptions } from "../meeting-options";
 import { useUser } from "@clerk/nextjs";
-import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk";
+import { useStreamVideoClient } from "@stream-io/video-react-sdk";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -31,8 +31,6 @@ export default function NewMeetingModal({
 		description: "",
 		link: "",
 	});
-
-	const [callDetails, setCallDetails] = useState<Call>();
 
 	const startMeeting = async () => {
 		if (!client || !user) return;
@@ -61,8 +59,6 @@ export default function NewMeetingModal({
 					},
 				},
 			});
-
-			setCallDetails(call);
 
 			if (!values.description) {
 				router.push(`/meeting/${call.id}`);
