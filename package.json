@@ -11,6 +11,7 @@
   "dependencies": {
     "@clerk/nextjs": "^5.2.2",
     "@clerk/themes": "^2.1.10",
+    "@internationalized/date": "^3.5.4",
     "@nextui-org/react": "^2.4.2",
     "@stream-io/node-sdk": "^0.3.0",
     "@stream-io/video-react-sdk": "^1.2.13",
