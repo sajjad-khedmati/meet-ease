@@ -89,7 +89,11 @@ export default function ScheduleMeetingModal({
 			size="lg"
 			placement="center"
 			isOpen={isOpen}
-			onOpenChange={() => setOption(MeetOptions.none)}
+			onOpenChange={() => {
+				setOption(MeetOptions.none);
+				setStep(Steps.create);
+				setValues(defaultValues);
+			}}
 		>
 			<ModalContent>
 				{step === Steps.create ? (
