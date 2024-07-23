@@ -11,15 +11,27 @@ import {
 	ModalHeader,
 	Textarea,
 } from "@nextui-org/react";
-import { getLocalTimeZone, now } from "@internationalized/date";
+import { getLocalTimeZone, now, ZonedDateTime } from "@internationalized/date";
 import { useUser } from "@clerk/nextjs";
-import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk";
+import {
+	Call,
+	MemberRequest,
+	useStreamVideoClient,
+} from "@stream-io/video-react-sdk";
 import { toast } from "sonner";
 import { CheckCircle2Icon } from "lucide-react";
+import UsersList from "../users-list";
 
 interface ScheduleMeetingModalProps {
 	isOpen: boolean;
 	setOption: Dispatch<SetStateAction<MeetOptions>>;
+}
+
+export interface ScheduleMeetingInstance {
+	dateTime: ZonedDateTime;
+	description: string;
+	link: string;
+	members: MemberRequest[];
 }
 
 enum Steps {
@@ -31,15 +43,16 @@ export default function ScheduleMeetingModal({
 	isOpen,
 	setOption,
 }: ScheduleMeetingModalProps) {
-	const defaultValues = {
+	const defaultValues: ScheduleMeetingInstance = {
 		dateTime: now(getLocalTimeZone()),
 		description: "Schedule meeting instant",
 		link: "",
+		members: [],
 	};
 	const { user } = useUser();
 	const client = useStreamVideoClient();
 
-	const [values, setValues] = useState(defaultValues);
+	const [values, setValues] = useState<ScheduleMeetingInstance>(defaultValues);
 
 	const [callDetails, setCallDetails] = useState<Call>();
 	const [step, setStep] = useState<Steps>(Steps.create);
@@ -61,6 +74,7 @@ export default function ScheduleMeetingModal({
 
 			const startsAt = new Date(values.dateTime.toDate()).toISOString();
 			const description = values.description;
+			const members = values.members;
 
 			await call.getOrCreate({
 				data: {
@@ -68,6 +82,7 @@ export default function ScheduleMeetingModal({
 					custom: {
 						description,
 					},
+					members,
 				},
 			});
 
@@ -111,9 +126,8 @@ export default function ScheduleMeetingModal({
 							minValue={now(getLocalTimeZone())}
 							onChange={(value) =>
 								setValues({
+									...values,
 									dateTime: value,
-									description: values.description,
-									link: values.link,
 								})
 							}
 						/>
@@ -127,12 +141,13 @@ export default function ScheduleMeetingModal({
 							isInvalid={values.description.length === 0}
 							onValueChange={(value) =>
 								setValues({
+									...values,
 									description: value,
-									dateTime: values.dateTime,
-									link: values.link,
 								})
 							}
 						/>
+
+						<UsersList values={values} setValues={setValues} />
 					</ModalBody>
 				) : (
 					<ModalBody className="pb-6">
