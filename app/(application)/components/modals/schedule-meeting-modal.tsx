@@ -20,7 +20,8 @@ import {
 } from "@stream-io/video-react-sdk";
 import { toast } from "sonner";
 import { CheckCircle2Icon } from "lucide-react";
-import UsersList from "../users-list";
+import UsersList from "../user-list";
+import { User } from "@clerk/nextjs/server";
 
 interface ScheduleMeetingModalProps {
 	isOpen: boolean;
@@ -31,7 +32,7 @@ export interface ScheduleMeetingInstance {
 	dateTime: ZonedDateTime;
 	description: string;
 	link: string;
-	members: MemberRequest[];
+	members: User[];
 }
 
 enum Steps {
@@ -74,7 +75,10 @@ export default function ScheduleMeetingModal({
 
 			const startsAt = new Date(values.dateTime.toDate()).toISOString();
 			const description = values.description;
-			const members = values.members;
+
+			const members = values.members.map((member): MemberRequest => {
+				return { user_id: member.id };
+			});
 
 			await call.getOrCreate({
 				data: {

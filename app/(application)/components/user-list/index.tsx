@@ -1,5 +1,5 @@
 "use client";
-import { getUsers } from "@/actions/users";
+import { getUser } from "@/actions/users";
 import { clerkClient, EmailAddress, User } from "@clerk/nextjs/server";
 import {
 	Badge,
@@ -13,20 +13,20 @@ import {
 } from "@nextui-org/react";
 import React, {
 	Dispatch,
-	ReactNode,
 	SetStateAction,
 	useEffect,
 	useState,
 	useTransition,
 } from "react";
-import { ScheduleMeetingInstance } from "./modals/schedule-meeting-modal";
+import { ScheduleMeetingInstance } from "../modals/schedule-meeting-modal";
+import UserItem from "./user-item";
 interface UserListProps {
 	values: ScheduleMeetingInstance;
 	setValues: Dispatch<SetStateAction<ScheduleMeetingInstance>>;
 }
 
-function getPrimaryEmail(emails: EmailAddress[]): string {
-	return emails.flatMap((items) => items.emailAddress)[0];
+export function getPrimaryEmail(emails: EmailAddress[]): string {
+	return emails?.flatMap((items) => items.emailAddress)[0];
 }
 
 export default function UsersList({ values, setValues }: UserListProps) {
@@ -38,7 +38,7 @@ export default function UsersList({ values, setValues }: UserListProps) {
 
 	useEffect(() => {
 		startTransition(async () => {
-			const users = await getUsers(emailAddress);
+			const users = await getUser(emailAddress);
 			setUsers(users.data);
 		});
 	}, [emailAddress]);
@@ -51,9 +51,10 @@ export default function UsersList({ values, setValues }: UserListProps) {
 					{(onclose) => (
 						<>
 							<ModalHeader>Users list</ModalHeader>
-							<ModalBody>
+							<ModalBody className="pb-6">
 								<Input
 									label="Email Address"
+									description="Enter an email of the user you want to meet"
 									value={emailAddress}
 									onChange={(e) => setEmailAddress(e.target.value)}
 								/>
@@ -61,11 +62,8 @@ export default function UsersList({ values, setValues }: UserListProps) {
 								{values.members.length > 0 && (
 									<div className="flex items-center flex-wrap gap-1">
 										{values.members?.map((member) => (
-											<p key={member.user_id} className="text-xs p-1">
-												{getPrimaryEmail(
-													users.find((user) => user.id === member.user_id)
-														?.emailAddresses!,
-												)}
+											<p key={member.id} className="text-xs p-1">
+												{getPrimaryEmail(member.emailAddresses)}
 											</p>
 										))}
 									</div>
@@ -73,30 +71,16 @@ export default function UsersList({ values, setValues }: UserListProps) {
 
 								{isPending ? (
 									<p>loading...</p>
+								) : users.length === 0 ? (
+									<p>User was not found!</p>
 								) : (
 									users.map((user) => (
-										<p
+										<UserItem
 											key={user.id}
-											onClick={() => {
-												const membersTemp = values.members;
-
-												// Toggle selected users
-												const index = values.members.findIndex(
-													(item) => item.user_id === user.id,
-												);
-
-												if (index === -1) {
-													membersTemp?.push({
-														user_id: user.id,
-													});
-												} else {
-													membersTemp.splice(index, 1);
-												}
-												setValues({ ...values, members: membersTemp });
-											}}
-										>
-											{getPrimaryEmail(user.emailAddresses)}
-										</p>
+											user={user}
+											values={values}
+											setValues={setValues}
+										/>
 									))
 								)}
 							</ModalBody>
