@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import { CheckCircle2Icon } from "lucide-react";
 import UsersList from "../user-list";
 import { User } from "@clerk/nextjs/server";
+import { isAfter, isFuture } from "date-fns";
 
 interface ScheduleMeetingModalProps {
 	isOpen: boolean;
@@ -176,7 +177,12 @@ export default function ScheduleMeetingModal({
 				{step === Steps.create && (
 					<ModalFooter>
 						<Button onClick={() => setOption(MeetOptions.none)}>Cancle</Button>
-						<Button onClick={scheduleMeeting} color="primary">
+						<Button
+							disabled={values.members.length === 0}
+							onClick={scheduleMeeting}
+							color="primary"
+							className="disabled:bg-blue-900"
+						>
 							Schedule
 						</Button>
 					</ModalFooter>
