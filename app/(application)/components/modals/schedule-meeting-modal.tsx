@@ -3,12 +3,14 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { MeetOptions } from "../meeting-options";
 import {
 	Button,
+	cn,
 	DatePicker,
 	Modal,
 	ModalBody,
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
+	Switch,
 	Textarea,
 } from "@nextui-org/react";
 import { getLocalTimeZone, now, ZonedDateTime } from "@internationalized/date";
@@ -19,10 +21,9 @@ import {
 	useStreamVideoClient,
 } from "@stream-io/video-react-sdk";
 import { toast } from "sonner";
-import { CheckCircle2Icon } from "lucide-react";
-import UsersList from "../user-list";
+import { CheckCircle2Icon, User2Icon, UserX2Icon } from "lucide-react";
+import UsersList, { getPrimaryEmail } from "../user-list";
 import { User } from "@clerk/nextjs/server";
-import { isAfter, isFuture } from "date-fns";
 
 interface ScheduleMeetingModalProps {
 	isOpen: boolean;
@@ -34,6 +35,7 @@ export interface ScheduleMeetingInstance {
 	description: string;
 	link: string;
 	members: User[];
+	isPrivate: boolean;
 }
 
 enum Steps {
@@ -50,6 +52,7 @@ export default function ScheduleMeetingModal({
 		description: "Schedule meeting instant",
 		link: "",
 		members: [],
+		isPrivate: false,
 	};
 	const { user } = useUser();
 	const client = useStreamVideoClient();
@@ -58,6 +61,7 @@ export default function ScheduleMeetingModal({
 
 	const [callDetails, setCallDetails] = useState<Call>();
 	const [step, setStep] = useState<Steps>(Steps.create);
+	const [isInvalidDate, setIsInvalidDate] = useState<boolean>(false);
 
 	const scheduleMeeting = async () => {
 		if (!client || !user) return;
@@ -77,9 +81,11 @@ export default function ScheduleMeetingModal({
 			const startsAt = new Date(values.dateTime.toDate()).toISOString();
 			const description = values.description;
 
-			const members = values.members.map((member): MemberRequest => {
-				return { user_id: member.id };
-			});
+			let membersReq: MemberRequest[] = [];
+			if (values.isPrivate)
+				membersReq = values.members.map((member): MemberRequest => {
+					return { user_id: member.id };
+				});
 
 			await call.getOrCreate({
 				data: {
@@ -87,7 +93,7 @@ export default function ScheduleMeetingModal({
 					custom: {
 						description,
 					},
-					members,
+					members: membersReq,
 				},
 			});
 
@@ -128,6 +134,14 @@ export default function ScheduleMeetingModal({
 							hideTimeZone
 							showMonthAndYearPickers
 							value={values.dateTime}
+							errorMessage={(value) => {
+								if (value.isInvalid) {
+									setIsInvalidDate(true);
+									return "Please select an valid date and time";
+								} else {
+									setIsInvalidDate(false);
+								}
+							}}
 							minValue={now(getLocalTimeZone())}
 							onChange={(value) =>
 								setValues({
@@ -152,7 +166,58 @@ export default function ScheduleMeetingModal({
 							}
 						/>
 
-						<UsersList values={values} setValues={setValues} />
+						<Switch
+							isSelected={values.isPrivate}
+							size="sm"
+							startContent={<User2Icon size={32} />}
+							endContent={<UserX2Icon size={32} />}
+							onChange={(e) =>
+								setValues({
+									isPrivate: e.target.checked,
+									dateTime: values.dateTime,
+									description: values.description,
+									link: values.link,
+									members: values.members,
+								})
+							}
+							classNames={{
+								base: cn(
+									"w-full flex w-full max-w-lg px-2 rounded-xl dark:bg-background-primary/50 bg-slate-100 border-slate-200 border-2 dark:border-background-primary py-4",
+								),
+							}}
+						>
+							<div className="flex flex-col flex-1 gap-1">
+								<p className="text-sm">Private Meeting</p>
+								<p className="text-tiny text-default-400">
+									Start an instance meeting by choose some pepoles in private
+									mode
+								</p>
+							</div>
+						</Switch>
+
+						{values.isPrivate && (
+							<UsersList values={values} setValues={setValues} />
+						)}
+
+						{values.isPrivate ? (
+							values.members.length > 0 ? (
+								<div className="">
+									<p className="mb-1 font-semibold">with</p>
+									<div className="flex flex-wrap items-center text-xs font-semibold gap-1">
+										<p className="py-2 px-4 bg-gray-800 rounded-xl flex items-center gap-2">
+											<User2Icon size={18} />
+											{getPrimaryEmail(values.members[0].emailAddresses)}
+										</p>
+										{values.members.length > 1 &&
+											`and ${values.members.length - 1} others`}
+									</div>
+								</div>
+							) : (
+								<p className="text-rose-500 font-light text-xs">
+									Please select at least one user
+								</p>
+							)
+						) : null}
 					</ModalBody>
 				) : (
 					<ModalBody className="pb-6">
@@ -178,7 +243,13 @@ export default function ScheduleMeetingModal({
 					<ModalFooter>
 						<Button onClick={() => setOption(MeetOptions.none)}>Cancle</Button>
 						<Button
-							disabled={values.members.length === 0}
+							disabled={
+								values.isPrivate
+									? values.members.length === 0
+										? true
+										: isInvalidDate
+									: isInvalidDate
+							}
 							onClick={scheduleMeeting}
 							color="primary"
 							className="disabled:bg-blue-900"

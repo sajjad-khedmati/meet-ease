@@ -45,7 +45,9 @@ export function getPrimaryEmail(emails: EmailAddress[]): string {
 export default function UsersList({ values, setValues }: UserListProps) {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-	const [groupSelected, setGroupSelected] = useState<string[]>([]);
+	const [groupSelected, setGroupSelected] = useState<string[]>(
+		values.members?.map((member) => member.id),
+	);
 
 	const [users, setUsers] = useState<User[]>([]);
 
@@ -66,7 +68,7 @@ export default function UsersList({ values, setValues }: UserListProps) {
 
 	return (
 		<>
-			<Button onPress={onOpen}>Users</Button>
+			<Button onPress={onOpen}>Select Users</Button>
 			<Modal placement="center" isOpen={isOpen} onOpenChange={onOpenChange}>
 				<ModalContent>
 					{(onclose) => (
