@@ -72,6 +72,9 @@ export default function CallList({
 			{calls && calls.length > 0 ? (
 				calls.map((meeting: Call | CallRecording) => (
 					<MeetingCard
+						members={(meeting as Call)
+							.queryMembers()
+							.then((res) => res.members)}
 						key={(meeting as Call).id}
 						icon={
 							type === "ended"
