@@ -30,7 +30,7 @@ interface MeetingCardProps {
 	buttonText?: string;
 	handleClick: () => void;
 	link: string;
-	members?: Promise<MemberResponse[]> | [];
+	members?: Promise<MemberResponse[]> | [] | false;
 }
 
 const MeetingCard = ({
@@ -44,7 +44,7 @@ const MeetingCard = ({
 	buttonText,
 	members = [],
 }: MeetingCardProps) => {
-	const { memberItems, isPending } = useMembers(members);
+	const { memberItems, isPending } = useMembers(members ? members : []);
 
 	return (
 		<section className="flex min-h-[258px] w-full flex-col justify-between gap-4 rounded-[14px] dark:bg-gray-800/60 bg-gray-100 px-5 py-8 xl:max-w-[568px]">
@@ -70,7 +70,7 @@ const MeetingCard = ({
 				)}
 			>
 				<div className="w-full">
-					{isPending ? (
+					{!members ? null : isPending ? (
 						<div className="relative flex w-full">
 							{Array.from(new Array(3)).map((_, index) => (
 								<Skeleton

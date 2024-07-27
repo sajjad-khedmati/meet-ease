@@ -55,7 +55,6 @@ export default function CallList({
 			const recordings = callData
 				.filter((call) => call.recordings.length > 0)
 				.flatMap((call) => call.recordings);
-
 			setRecordings(recordings);
 		};
 
@@ -78,9 +77,10 @@ export default function CallList({
 							.slice((currentPage - 1) * PAGE_SIZE, PAGE_SIZE * currentPage)
 							.map((meeting: Call | CallRecording) => (
 								<MeetingCard
-									members={(meeting as Call)
-										.queryMembers()
-										.then((res) => res.members)}
+									members={
+										type !== "recording" &&
+										(meeting as Call).queryMembers().then((res) => res.members)
+									}
 									key={(meeting as Call).id}
 									icon={
 										type === "ended"
