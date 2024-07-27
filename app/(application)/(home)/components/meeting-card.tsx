@@ -19,6 +19,7 @@ import { MemberResponse } from "@stream-io/video-react-sdk";
 import { useEffect, useState, useTransition } from "react";
 import { getPrimaryEmail } from "../../components/user-list";
 import { formatDistanceToNowStrict } from "date-fns";
+import useMembers from "@/hooks/useMember";
 
 interface MeetingCardProps {
 	title: string;
@@ -43,17 +44,7 @@ const MeetingCard = ({
 	buttonText,
 	members = [],
 }: MeetingCardProps) => {
-	const [isPending, startTransition] = useTransition();
-	const [memberItems, setMemberItems] = useState<MemberResponse[] | []>([]);
-
-	useEffect(() => {
-		startTransition(async () => {
-			const res = await members;
-			console.log(res);
-
-			if (res.length > 0) setMemberItems(res);
-		});
-	}, [members]);
+	const { memberItems, isPending } = useMembers(members);
 
 	return (
 		<section className="flex min-h-[258px] w-full flex-col justify-between gap-4 rounded-[14px] dark:bg-gray-800/60 bg-gray-100 px-5 py-8 xl:max-w-[568px]">
@@ -93,7 +84,7 @@ const MeetingCard = ({
 						</div>
 					) : memberItems.length > 0 ? (
 						<AvatarGroup isBordered max={3}>
-							{memberItems.slice(0, 3).map((member, index) => (
+							{memberItems.slice(0, 3).map((member) => (
 								<Popover
 									showArrow
 									offset={10}

@@ -17,6 +17,7 @@ export const useGetCalls = () => {
 			try {
 				const { calls } = await client.queryCalls({
 					sort: [{ field: "starts_at", direction: -1 }],
+					watch: true,
 					filter_conditions: {
 						starts_at: { $exists: true },
 						$or: [
@@ -33,7 +34,6 @@ export const useGetCalls = () => {
 				setCalls(calls);
 			} catch (error) {
 				if (error instanceof Error) throw new Error(error.message);
-
 				throw new Error("Somthing was wrong when we trying to fetch calls");
 			} finally {
 				setIsLoading(false);

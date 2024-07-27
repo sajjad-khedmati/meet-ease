@@ -6,7 +6,8 @@ import { Call, CallRecording } from "@stream-io/video-react-sdk";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import MeetingCard from "./meeting-card";
-
+import { Pagination } from "@nextui-org/react";
+const PAGE_SIZE = 4;
 export default function CallList({
 	type,
 }: {
@@ -17,13 +18,14 @@ export default function CallList({
 		useGetCalls();
 
 	const [recordings, setRecordings] = useState<CallRecording[]>([]);
+	const [currentPage, setCurrentPage] = useState<number>(1);
 
 	const getCalls = () => {
 		switch (type) {
 			case "ended":
 				return endedCalls;
 			case "recording":
-				return recordingCalls;
+				return recordings;
 			case "upcoming":
 				return upcomingCalls;
 			default:
@@ -68,50 +70,74 @@ export default function CallList({
 	const noCallsMessage = getNoCallsMessage();
 
 	return (
-		<div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
+		<>
 			{calls && calls.length > 0 ? (
-				calls.map((meeting: Call | CallRecording) => (
-					<MeetingCard
-						members={(meeting as Call)
-							.queryMembers()
-							.then((res) => res.members)}
-						key={(meeting as Call).id}
-						icon={
-							type === "ended"
-								? "/icons/previous.svg"
-								: type === "upcoming"
-								? "/icons/upcoming.svg"
-								: "/icons/recordings.svg"
-						}
-						title={
-							(meeting as Call).state?.custom?.description ||
-							(meeting as CallRecording).filename?.substring(0, 20) ||
-							"No Description"
-						}
-						date={
-							(meeting as Call).state?.startsAt?.toLocaleString() ||
-							(meeting as CallRecording).start_time?.toLocaleString()
-						}
-						isPreviousMeeting={type === "ended"}
-						link={
-							type === "recording"
-								? (meeting as CallRecording).url
-								: `${process.env.NEXT_PUBLIC_BASE_URL}/meeting/${
-										(meeting as Call).id
-								  }`
-						}
-						buttonIcon1={type === "recording" ? "/icons/play.svg" : undefined}
-						buttonText={type === "recording" ? "Play" : "Start"}
-						handleClick={
-							type === "recording"
-								? () => router.push(`${(meeting as CallRecording).url}`)
-								: () => router.push(`/meeting/${(meeting as Call).id}`)
-						}
-					/>
-				))
+				<div className="flex flex-col gap-6">
+					<div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
+						{(type === "recording" ? recordings : calls)
+							.slice((currentPage - 1) * PAGE_SIZE, PAGE_SIZE * currentPage)
+							.map((meeting: Call | CallRecording) => (
+								<MeetingCard
+									members={(meeting as Call)
+										.queryMembers()
+										.then((res) => res.members)}
+									key={(meeting as Call).id}
+									icon={
+										type === "ended"
+											? "/icons/previous.svg"
+											: type === "upcoming"
+											? "/icons/upcoming.svg"
+											: "/icons/recordings.svg"
+									}
+									title={
+										(meeting as Call).state?.custom?.description ||
+										(meeting as CallRecording).filename?.substring(0, 20) ||
+										"No Description"
+									}
+									date={
+										(meeting as Call).state?.startsAt?.toLocaleString() ||
+										(meeting as CallRecording).start_time?.toLocaleString()
+									}
+									isPreviousMeeting={type === "ended"}
+									link={
+										type === "recording"
+											? (meeting as CallRecording).url
+											: `${process.env.NEXT_PUBLIC_BASE_URL}/meeting/${
+													(meeting as Call).id
+											  }`
+									}
+									buttonIcon1={
+										type === "recording" ? "/icons/play.svg" : undefined
+									}
+									buttonText={type === "recording" ? "Play" : "Start"}
+									handleClick={
+										type === "recording"
+											? () => router.push(`${(meeting as CallRecording).url}`)
+											: () => router.push(`/meeting/${(meeting as Call).id}`)
+									}
+								/>
+							))}
+					</div>
+
+					<div className="flex justify-between items-center flex-wrap gap-x-8 gap-y-2">
+						<p className="text-sm font-medium">
+							<span className="font-semibold text-base">{calls.length}</span>{" "}
+							Calls was founded!
+						</p>
+						{calls.length > PAGE_SIZE && (
+							<Pagination
+								showControls
+								showShadow
+								total={Math.ceil(calls.length / PAGE_SIZE)}
+								page={currentPage}
+								onChange={setCurrentPage}
+							/>
+						)}
+					</div>
+				</div>
 			) : (
 				<h1>{noCallsMessage}</h1>
 			)}
-		</div>
+		</>
 	);
 }
