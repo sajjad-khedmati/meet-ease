@@ -49,7 +49,7 @@ export default function MeetingOptions() {
 				title="view recording"
 				description="Meeting recordings"
 				classNames="bg-[#F9A90E] dark:bg-[#F9A90E]"
-				onClick={() => router.push("/recording")}
+				onClick={() => router.push("/recordings")}
 			/>
 
 			<NewMeetingModal

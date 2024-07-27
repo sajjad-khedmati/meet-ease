@@ -38,7 +38,8 @@ interface UserListProps {
 }
 
 // this main function uses in user-list components , recieve an emails array from user object and return an email from that user as string
-export function getPrimaryEmail(emails: EmailAddress[]): string {
+export function getPrimaryEmail(emails: EmailAddress[] | undefined): string {
+	if (!emails) return "";
 	return emails?.flatMap((items) => items.emailAddress)[0];
 }
 

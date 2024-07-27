@@ -1,5 +1,6 @@
 import { useUser } from "@clerk/nextjs";
 import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk";
+import { isAfter } from "date-fns";
 import { useEffect, useState } from "react";
 
 export const useGetCalls = () => {
@@ -49,9 +50,13 @@ export const useGetCalls = () => {
 		return (startsAt && new Date(startsAt) < now) || !!endedAt;
 	});
 
-	const upcomingCalls = calls.filter(({ state: { startsAt } }: Call) => {
-		return startsAt && new Date(startsAt) > now;
-	});
+	const upcomingCalls = calls
+		.filter(({ state: { startsAt } }: Call) => {
+			return startsAt && new Date(startsAt) > now;
+		})
+		.sort((a: Call, b: Call) =>
+			isAfter(a.state.startsAt!, b.state.startsAt!) ? 1 : -1,
+		);
 
 	return {
 		endedCalls,
