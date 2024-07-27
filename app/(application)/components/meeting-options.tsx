@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import ActionCard from "./action-card";
 import NewMeetingModal from "./modals/new-meeting-modal";
 import ScheduleMeetingModal from "./modals/schedule-meeting-modal";
+import JoinMeetingModal from "./modals/join-meeting-modal";
 
 export enum MeetOptions {
 	newMeeting = "newMeeting",
@@ -59,6 +60,11 @@ export default function MeetingOptions() {
 
 			<ScheduleMeetingModal
 				isOpen={option === MeetOptions.scheduleMeeting}
+				setOption={setOption}
+			/>
+
+			<JoinMeetingModal
+				isOpen={option === MeetOptions.joinMeeting}
 				setOption={setOption}
 			/>
 		</div>
